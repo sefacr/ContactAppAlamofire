@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import Alamofire
 
 
 class KisilerDaoRepository {
@@ -15,90 +16,87 @@ class KisilerDaoRepository {
     //http://kasimadalan.pe.hu/kisiler/tum_kisiler.php
     
     func save(name: String, phoneNumber: String){
-        var request = URLRequest(url: URL(string: "http://kasimadalan.pe.hu/kisiler/insert_kisiler.php")!)
-        request.httpMethod = "POST"
-        let postString = "kisi_ad=\(name)&kisi_tel=\(phoneNumber)"
-        request.httpBody = postString.data(using: .utf8)
-        
-         URLSession.shared.dataTask(with: request) {data, response, error in
-             do{
-                 let reply = try JSONDecoder().decode(CRUDResponse.self, from: data!)
-                 print("---------Insert-------")
-                 print("Başarı : \(reply.success!)")
-                 print("Mesaj : \(reply.message!)")
-             }catch{
-                 print(error.localizedDescription)
-             }
-         }.resume()
-         
+        let params: Parameters = ["kisi_ad":name,"kisi_tel":phoneNumber]
+        AF.request("http://kasimadalan.pe.hu/kisiler/insert_kisiler.php", method: .post, parameters: params).response { response in
+            if let data = response.data{
+                do{
+                    let reply = try JSONDecoder().decode(CRUDResponse.self, from: data)
+                    print("----------INSERT---------")
+                    print("Başarı : \(reply.success!)")
+                    print("Mesaj : \(reply.message!)")
+                }catch{
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
     
     func update(kisi_id: Int, kisi_ad: String, kisi_tel: String){
-        var request = URLRequest(url: URL(string: "http://kasimadalan.pe.hu/kisiler/update_kisiler.php")!)
-        request.httpMethod = "POST"
-        let postString = "kisi_id=\(kisi_id)&kisi_ad=\(kisi_ad)&kisi_tel=\(kisi_tel)"
-        request.httpBody = postString.data(using: .utf8)
-        
-         URLSession.shared.dataTask(with: request) {data, response, error in
-             do{
-                 let reply = try JSONDecoder().decode(CRUDResponse.self, from: data!)
-                 print("---------Update-------")
-                 print("Başarı : \(reply.success!)")
-                 print("Mesaj : \(reply.message!)")
-             }catch{
-                 print(error.localizedDescription)
-             }
-         }.resume()
+        let params: Parameters = ["kisi_id":kisi_id, "kisi_ad": kisi_ad, "kisi_tel": kisi_tel]
+        AF.request("http://kasimadalan.pe.hu/kisiler/update_kisiler.php", method: .post, parameters: params).response { response in
+            if let data = response.data{
+                do{
+                    let reply = try JSONDecoder().decode(CRUDResponse.self, from: data)
+                    print("----------UPDATE---------")
+                    print("Başarı : \(reply.success!)")
+                    print("Mesaj : \(reply.message!)")
+                }catch{
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
     
     func search(searchText: String){
-        var request = URLRequest(url: URL(string: "http://kasimadalan.pe.hu/kisiler/tum_kisiler_arama.php")!)
-        request.httpMethod = "POST"
-        let postString = "kisi_ad=\(searchText)"
-        request.httpBody = postString.data(using: .utf8)
-        URLSession.shared.dataTask(with: request) {data, response, error in
-            do{
-                let reply = try JSONDecoder().decode(KisilerResponse.self, from: data!)
-                if let list = reply.kisiler {
+        let params: Parameters = ["kisi_ad": searchText]
+        AF.request("http://kasimadalan.pe.hu/kisiler/tum_kisiler_arama.php", method: .post, parameters: params).response { response in
+            if let data = response.data{
+                do{
+                    let reply = try JSONDecoder().decode(KisilerResponse.self, from: data)
+                    if let list = reply.kisiler {
+                        self.contactsList.onNext(list)
+                    }
+                }catch{
+                    print(error.localizedDescription)
+                    let list = [Kisiler]()
                     self.contactsList.onNext(list)
                 }
-            }catch{
-                print(error.localizedDescription)
             }
-        }.resume()
+        }
     }
     
     func delete(personId:Int) {
-        var request = URLRequest(url: URL(string: "http://kasimadalan.pe.hu/kisiler/delete_kisiler.php")!)
-        request.httpMethod = "POST"
-        let postString = "kisi_id=\(personId)"
-        request.httpBody = postString.data(using: .utf8)
+        let params: Parameters = ["kisi_id":personId]
+        AF.request("http://kasimadalan.pe.hu/kisiler/delete_kisiler.php", method: .post, parameters: params).response { response in
+            if let data = response.data{
+                do{
+                    let reply = try JSONDecoder().decode(CRUDResponse.self, from: data)
+                    print("----------DELETE---------")
+                    print("Başarı : \(reply.success!)")
+                    print("Mesaj : \(reply.message!)")
+                }catch{
+                    print(error.localizedDescription)
+                }
+            }
+        }
         
-         URLSession.shared.dataTask(with: request) {data, response, error in
-             do{
-                 let reply = try JSONDecoder().decode(CRUDResponse.self, from: data!)
-                 print("---------Delete-------")
-                 print("Başarı : \(reply.success!)")
-                 print("Mesaj : \(reply.message!)")
-             }catch{
-                 print(error.localizedDescription)
-             }
-         }.resume()
     }
     
     func uploadContacts(){
-       let url = URL(string: "http://kasimadalan.pe.hu/kisiler/tum_kisiler.php")!
-        
-        URLSession.shared.dataTask(with: url) {data, response, error in
-            do{
-                let reply = try JSONDecoder().decode(KisilerResponse.self, from: data!)
-                if let list = reply.kisiler {
-                    self.contactsList.onNext(list)
+        AF.request("http://kasimadalan.pe.hu/kisiler/tum_kisiler.php", method: .get).response { response in
+            if let data = response.data{
+                do{
+                    let reply = try JSONDecoder().decode(KisilerResponse.self, from: data)
+                    if let list = reply.kisiler {
+                        self.contactsList.onNext(list)
+                    }
+                    let rawResponse = try JSONSerialization.jsonObject(with: data) //webservisten gelen ham data
+                    print(rawResponse)
+                }catch{
+                    print(error.localizedDescription)
                 }
-            }catch{
-                print(error.localizedDescription)
             }
-        }.resume()
-        
+        }
     }
+    
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E68907D92BFC94850022FC92 /* CRUDResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68907D82BFC94850022FC92 /* CRUDResponse.swift */; };
 		E68907DB2BFC95270022FC92 /* KisilerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68907DA2BFC95270022FC92 /* KisilerResponse.swift */; };
+		E68907DE2BFE1E340022FC92 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = E68907DD2BFE1E340022FC92 /* Alamofire */; };
 		E6982C5C2BEA49150020EE9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6982C5B2BEA49150020EE9B /* AppDelegate.swift */; };
 		E6982C5E2BEA49150020EE9B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6982C5D2BEA49150020EE9B /* SceneDelegate.swift */; };
 		E6982C602BEA49150020EE9B /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6982C5F2BEA49150020EE9B /* MainScreen.swift */; };
@@ -53,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E68907DE2BFE1E340022FC92 /* Alamofire in Frameworks */,
 				E6982CDB2BF37D2D0020EE9B /* RxSwift in Frameworks */,
 				E6982CD92BF37D2D0020EE9B /* RxBlocking-Dynamic in Frameworks */,
 			);
@@ -176,6 +178,7 @@
 			packageProductDependencies = (
 				E6982CD82BF37D2D0020EE9B /* RxBlocking-Dynamic */,
 				E6982CDA2BF37D2D0020EE9B /* RxSwift */,
+				E68907DD2BFE1E340022FC92 /* Alamofire */,
 			);
 			productName = ContactsApp;
 			productReference = E6982C582BEA49150020EE9B /* ContactsApp.app */;
@@ -207,6 +210,7 @@
 			mainGroup = E6982C4F2BEA49150020EE9B;
 			packageReferences = (
 				E6982CD72BF37D2D0020EE9B /* XCRemoteSwiftPackageReference "RxSwift" */,
+				E68907DC2BFE1E340022FC92 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = E6982C592BEA49150020EE9B /* Products */;
 			projectDirPath = "";
@@ -472,6 +476,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E68907DC2BFE1E340022FC92 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
 		E6982CD72BF37D2D0020EE9B /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
@@ -483,6 +495,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E68907DD2BFE1E340022FC92 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E68907DC2BFE1E340022FC92 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
 		E6982CD82BF37D2D0020EE9B /* RxBlocking-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E6982CD72BF37D2D0020EE9B /* XCRemoteSwiftPackageReference "RxSwift" */;
